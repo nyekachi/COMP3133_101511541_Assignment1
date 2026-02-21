@@ -1,0 +1,234 @@
+{
+  "info": {
+    "name": "COMP3133 - Employee Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:4000/graphql"
+    },
+    {
+      "key": "TOKEN",
+      "value": ""
+    },
+    {
+      "key": "EMPLOYEE_ID",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Signup",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation {\\n  signup(input: {\\n    username: \\\"johndoe\\\"\\n    email: \\\"johndoe@example.com\\\"\\n    password: \\\"password123\\\"\\n  }) {\\n    _id\\n    username\\n    email\\n    created_at\\n  }\\n}\"}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}",
+          "host": ["{{BASE_URL}}"]
+        }
+      }
+    },
+    {
+      "name": "2. Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const res = pm.response.json();",
+              "if (res.data && res.data.login) {",
+              "  pm.collectionVariables.set('TOKEN', res.data.login.token);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"query {\\n  login(usernameOrEmail: \\\"johndoe\\\", password: \\\"password123\\\") {\\n    token\\n    user {\\n      _id\\n      username\\n      email\\n    }\\n  }\\n}\"}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}",
+          "host": ["{{BASE_URL}}"]
+        }
+      }
+    },
+    {
+      "name": "3. Get All Employees",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{TOKEN}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"query {\\n  getAllEmployees {\\n    _id\\n    first_name\\n    last_name\\n    email\\n    gender\\n    designation\\n    salary\\n    date_of_joining\\n    department\\n    employee_photo\\n    created_at\\n  }\\n}\"}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}",
+          "host": ["{{BASE_URL}}"]
+        }
+      }
+    },
+    {
+      "name": "4. Add New Employee",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const res = pm.response.json();",
+              "if (res.data && res.data.addEmployee) {",
+              "  pm.collectionVariables.set('EMPLOYEE_ID', res.data.addEmployee._id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{TOKEN}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation {\\n  addEmployee(input: {\\n    first_name: \\\"Jane\\\"\\n    last_name: \\\"Smith\\\"\\n    email: \\\"jane.smith@company.com\\\"\\n    gender: \\\"Female\\\"\\n    designation: \\\"Software Engineer\\\"\\n    salary: 75000\\n    date_of_joining: \\\"2024-01-15\\\"\\n    department: \\\"Engineering\\\"\\n    employee_photo: \\\"https://res.cloudinary.com/demo/image/upload/sample.jpg\\\"\\n  }) {\\n    _id\\n    first_name\\n    last_name\\n    email\\n    designation\\n    salary\\n    department\\n    employee_photo\\n    created_at\\n  }\\n}\"}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}",
+          "host": ["{{BASE_URL}}"]
+        }
+      }
+    },
+    {
+      "name": "5. Search Employee by ID",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{TOKEN}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"query {\\n  searchEmployeeById(eid: \\\"{{EMPLOYEE_ID}}\\\") {\\n    _id\\n    first_name\\n    last_name\\n    email\\n    gender\\n    designation\\n    salary\\n    date_of_joining\\n    department\\n    employee_photo\\n  }\\n}\"}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}",
+          "host": ["{{BASE_URL}}"]
+        }
+      }
+    },
+    {
+      "name": "6. Update Employee by ID",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{TOKEN}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation {\\n  updateEmployee(eid: \\\"{{EMPLOYEE_ID}}\\\", input: {\\n    designation: \\\"Senior Software Engineer\\\"\\n    salary: 90000\\n  }) {\\n    _id\\n    first_name\\n    last_name\\n    designation\\n    salary\\n    updated_at\\n  }\\n}\"}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}",
+          "host": ["{{BASE_URL}}"]
+        }
+      }
+    },
+    {
+      "name": "7. Delete Employee by ID",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{TOKEN}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"mutation {\\n  deleteEmployee(eid: \\\"{{EMPLOYEE_ID}}\\\")\\n}\"}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}",
+          "host": ["{{BASE_URL}}"]
+        }
+      }
+    },
+    {
+      "name": "8. Search by Designation or Department",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{TOKEN}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"query {\\n  searchEmployeeByDesignationOrDepartment(department: \\\"Engineering\\\") {\\n    _id\\n    first_name\\n    last_name\\n    designation\\n    department\\n    salary\\n  }\\n}\"}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}",
+          "host": ["{{BASE_URL}}"]
+        }
+      }
+    }
+  ]
+}
