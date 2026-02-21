@@ -89,17 +89,6 @@ cp .env.example .env
 npm start
 ```
 
-### Environment Variables
-
-```
-MONGO_URI=mongodb+srv://assignment1:jfL4s3peMq9wrwKI@comp3133.4ptr5cv.mongodb.net/comp3133_101511541_Assigment1?appName=COMP3133
-CLOUDINARY_CLOUD_NAME=dpfr2jfks
-CLOUDINARY_API_KEY=517138456552274
-CLOUDINARY_API_SECRET=**********
-PORT=4000
-JWT_SECRET=assignment1key1.0
-```
-
 ---
 
 ## 🗄️ Database Schema
